@@ -79,9 +79,10 @@ def pdf_parse(name):
         ws[coords_to_xl(i, 1)].border = border
         ws[coords_to_xl(i, 1)].alignment = head_aligment
         
-    for y, val_y in enumerate(data[list(map(lambda x: x[0], data)).index(''):]):
-        p_ser, p_num = val_y[5].split(', ')[0].split()
-        vidacha = ', '.join(val_y[5].split(', ')[1:])
+    for y, val_y in enumerate(filter(lambda x: x[0] == '', data)):
+        if not val_y[0]:
+            p_ser, p_num = val_y[5].split(', ')[0].split()
+            vidacha = ', '.join(val_y[5].split(', ')[1:])
         
         formated_data.append(list(map(to_name, val_y[1].split())) + val_y[2:5] + [f'{p_ser} № {p_num}', vidacha])
 
