@@ -84,7 +84,7 @@ def pdf_parse(name):
             p_ser, p_num = val_y[5].split(', ')[0].split()
             vidacha = ', '.join(val_y[5].split(', ')[1:])
         
-        formated_data.append(list(map(to_name, val_y[1].split())) + val_y[2:5] + [f'{p_ser} № {p_num}', vidacha])
+        formated_data.append(to_name(val_y[1].split()) + val_y[2:5] + [f'{p_ser} № {p_num}', vidacha])
 
     for y, val_y in enumerate(formated_data):
         for x, val_x in enumerate(val_y):
