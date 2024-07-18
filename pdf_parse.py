@@ -9,7 +9,6 @@ import sys
 
 def pdf_parse(name):
     doc = DocumentParser(f'./upload/{name}')
-    a = 0
     OTSTUP = 2
 
     SIZE_ROW = 86.25
@@ -52,10 +51,9 @@ def pdf_parse(name):
 
     for _type, item in doc.parse():
         if _type == "table":
-            if a == 1:
+            if 'Место рождения' in item.get("data")[0]:
                 data = item.get("data")
                 break
-            a += 1
 
     wb = Workbook()
     ws = wb.active
@@ -80,10 +78,19 @@ def pdf_parse(name):
         ws[coords_to_xl(i, 1)].alignment = head_aligment
         
     for y, val_y in enumerate(filter(lambda x: x[0] == '', data)):
+        print(val_y[5])
         if not val_y[0]:
-            p_ser, p_num = val_y[5].split(', ')[0].split()
-            vidacha = ', '.join(val_y[5].split(', ')[1:])
-        
+            try:
+                p_ser, p_num = val_y[5].split(', ')[0].split()
+                vidacha = ', '.join(val_y[5].split(', ')[1:])
+            except:
+                p = val_y[5].split(', ')[0].split()
+                p_ser = ''.join(p[:2])
+                p_num = p[2]
+                vidacha = ', '.join(val_y[5].split(', ')[1:])
+        fio = val_y[1].split()
+        if len(fio) < 2:
+            fio = val_y[1].split('\n')
         formated_data.append(to_name(val_y[1].split()) + val_y[2:5] + [f'{p_ser} № {p_num}', vidacha])
 
     for y, val_y in enumerate(formated_data):
