@@ -2,7 +2,7 @@ from docx_parser import DocumentParser
 from openpyxl import Workbook
 from openpyxl.styles import Font, Border, Side, Alignment
 
-from string import ascii_uppercase
+from string import ascii_uppercase, digits
 from utils import coords_to_xl, to_name
 import sys
 
@@ -51,10 +51,11 @@ def pdf_parse(name):
 
     for _type, item in doc.parse():
         if _type == "table":
-            if 'Место рождения' in item.get("data")[0]:
+            if '№\nп/п' in item.get("data")[0] or 'Дата рождения' in item.get("data")[0]:
                 data = item.get("data")
+                print(data)
                 break
-
+    
     wb = Workbook()
     ws = wb.active
 
@@ -76,23 +77,20 @@ def pdf_parse(name):
         ws[coords_to_xl(i, 1)].font = head_font
         ws[coords_to_xl(i, 1)].border = border
         ws[coords_to_xl(i, 1)].alignment = head_aligment
-        
-    for y, val_y in enumerate(filter(lambda x: x[0] == '', data)):
+    for y, val_y in enumerate(filter(lambda x: x[0] == '' or x[0][0] in digits, data)):
         print(val_y[5])
-        if not val_y[0]:
-            try:
-                p_ser, p_num = val_y[5].split(', ')[0].split()
-                vidacha = ', '.join(val_y[5].split(', ')[1:])
-            except:
-                p = val_y[5].split(', ')[0].split()
-                p_ser = ''.join(p[:2])
-                p_num = p[2]
-                vidacha = ', '.join(val_y[5].split(', ')[1:])
+        try:
+            p_ser, p_num = val_y[5].split(', ')[0].split()
+            vidacha = ', '.join(val_y[5].split(', ')[1:])
+        except:
+            p = val_y[5].split(', ')[0].split()
+            p_ser = ''.join(p[:2])
+            p_num = p[2]
+            vidacha = ', '.join(val_y[5].split(', ')[1:])
         fio = val_y[1].split()
         if len(fio) < 2:
             fio = val_y[1].split('\n')
         formated_data.append(to_name(val_y[1].split()) + val_y[2:5] + [f'{p_ser} № {p_num}', vidacha])
-
     for y, val_y in enumerate(formated_data):
         for x, val_x in enumerate(val_y):
             ws[coords_to_xl(x, y + OTSTUP)] = val_x
