@@ -163,3 +163,4 @@ cython_debug/
 
 upload/*.doc*
 static/*.xl*
+test.py
