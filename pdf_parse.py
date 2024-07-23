@@ -97,11 +97,6 @@ def pdf_parse(name):
             ws[coords_to_xl(x, y + OTSTUP)].font = text_font
             ws[coords_to_xl(x, y + OTSTUP)].border = border
             ws[coords_to_xl(x, y + OTSTUP)].alignment = text_aligment
-    
-    mvd = wb.create_sheet("MVD", 1)
-    with open("MVD.txt", 'r', encoding="utf-8") as f:
-        for num, i in enumerate(f.read().split("\n")):
-            mvd[f'A{num + 1}'] = i
 
     wb.save(f'./static/{".".join([name.split(".")[0], "xlsx"])}')
     return '.'.join([name.split('.')[0], 'xlsx'])
